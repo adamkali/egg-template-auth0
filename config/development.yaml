@@ -1,0 +1,34 @@
+namespace: __EGG_NAMESPACE__
+name: __EGG_APP_NAME__
+semver: 0.0.1
+license: __EGG_LICENSE__ 
+copyright:
+    year: 2025
+    author: __EGG_AUTHOR__
+server:
+    auth0:
+        domain: __EGG_AUTH0_DOMAIN__
+        audience: __EGG_AUTH0_AUDIENCE__
+        client_id: __EGG_AUTH0_CLIENT_ID__
+        client_secret: __EGG_AUTH0_CLIENT_SECRET__
+    port: __EGG_PORT__
+    frontend:
+        dir: __EGG_FRONTEND_DIR__ 
+        api: __EGG_FRONTEND_API__ 
+database:
+    url: __EGG_DB_URL__ 
+    sqlc:
+        repository: __EGG_SQLC_REPO__ 
+        schema: __EGG_SQLC_SCHEMA__
+        sql_or_go: __EGG_SQLC_TYPE__
+    queries: __EGG_DB_QUERIES__
+    migration:
+        protocol: __EGG_MIGRATION_PROTO__ 
+        destination: __EGG_MIGRATION_DEST__
+cache:
+    url: __EGG_CACHE_URL__ 
+s3:
+    url: __EGG_S3_URL__ 
+    access: __EGG_S3_ACCESS__
+    secret: __EGG_S3_SECRET__ 
+    secure: true

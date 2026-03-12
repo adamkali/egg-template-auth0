@@ -1,0 +1,358 @@
+# __EGG_APP_NAME__ Taskfile
+# Run `task --list` to see all available tasks
+version: '3'
+
+vars:
+  APP_NAME: __EGG_APP_NAME__
+  BINARY_DIR: ./tmp
+  BINARY_PATH: '{{.BINARY_DIR}}/{{.APP_NAME}}'
+  DOCKER_IMAGE: 'ghcr.io/__EGG_NAMESPACE_OWNER__/{{.APP_NAME}}'
+  PORT: __EGG_PORT__
+
+env:
+  CGO_ENABLED: 0
+
+tasks:
+  # =============================================================================
+  # Default
+  # =============================================================================
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  # =============================================================================
+  # Development
+  # =============================================================================
+  dev:
+    desc: Run backend with hot reload (air)
+    cmds:
+      - air
+
+  dev:web:
+    desc: Run frontend dev server (pnpm dev)
+    dir: web
+    cmds:
+      - pnpm dev
+
+  dev:all:
+    desc: Run backend and frontend concurrently
+    deps:
+      - task: dev
+      - task: dev:web
+
+  # =============================================================================
+  # Build
+  # =============================================================================
+  build:
+    desc: Build backend binary
+    cmds:
+      - mkdir -p {{.BINARY_DIR}}
+      - go build -buildvcs=false -ldflags="-s -w" -o {{.BINARY_PATH}} .
+    sources:
+      - '**/*.go'
+      - go.mod
+      - go.sum
+    generates:
+      - '{{.BINARY_PATH}}'
+
+  build:debug:
+    desc: Build backend binary with debug symbols (for dlv)
+    cmds:
+      - mkdir -p {{.BINARY_DIR}}
+      - CGO_ENABLED=0 go build -gcflags=all="-N -l" -o {{.BINARY_PATH}} main.go
+
+  dev:debug:
+    desc: Build debug binary and serve via dlv on :2345
+    cmds:
+      - task: build:debug
+      - dlv exec {{.BINARY_PATH}} --listen=127.0.0.1:2345 --headless=true --api-version=2 --accept-multiclient --continue --log --
+
+  build:web:
+    desc: Build frontend
+    dir: web
+    cmds:
+      - pnpm build
+    sources:
+      - 'src/**/*'
+      - package.json
+      - pnpm-lock.yaml
+    generates:
+      - dist/**/*
+
+  build:all:
+    desc: Build backend and frontend
+    cmds:
+      - task: build:web
+      - task: build
+
+  # =============================================================================
+  # Docker
+  # =============================================================================
+  docker:build:
+    desc: Build Docker image
+    vars:
+      VERSION:
+        sh: grep 'semver:' config/development.yaml | awk '{print $2}'
+      GIT_SHA:
+        sh: git rev-parse --short HEAD
+    cmds:
+      - docker build -t {{.DOCKER_IMAGE}}:latest -t {{.DOCKER_IMAGE}}:{{.VERSION}} -t {{.DOCKER_IMAGE}}:{{.GIT_SHA}} .
+
+  docker:push:
+    desc: Push Docker image to ghcr.io
+    deps:
+      - docker:build
+    vars:
+      VERSION:
+        sh: grep 'semver:' config/development.yaml | awk '{print $2}'
+    cmds:
+      - docker push {{.DOCKER_IMAGE}}:latest
+      - docker push {{.DOCKER_IMAGE}}:{{.VERSION}}
+
+  docker:tag:
+    desc: Tag Docker image with latest and semver, then create git tag
+    vars:
+      VERSION:
+        sh: grep 'semver:' config/development.yaml | awk '{print $2}'
+      GIT_SHA:
+        sh: git rev-parse --short HEAD
+    cmds:
+      - echo "Tagging Docker image as {{.DOCKER_IMAGE}}:latest and {{.DOCKER_IMAGE}}:{{.VERSION}}"
+      - docker tag {{.DOCKER_IMAGE}}:{{.GIT_SHA}} {{.DOCKER_IMAGE}}:latest
+      - docker tag {{.DOCKER_IMAGE}}:{{.GIT_SHA}} {{.DOCKER_IMAGE}}:{{.VERSION}}
+      - echo "Creating git tag v{{.VERSION}}"
+      - git tag -a v{{.VERSION}} -m "Release v{{.VERSION}}"
+
+  # =============================================================================
+  # Docker Compose
+  # =============================================================================
+  compose:up:
+    desc: Start docker-compose stack
+    preconditions:
+      - test -f config/docker.yaml
+    cmds:
+      - docker compose -f images/docker-compose.yaml up -d
+
+  compose:down:
+    desc: Stop docker-compose stack
+    cmds:
+      - docker compose -f images/docker-compose.yaml down
+
+  compose:down:clean:
+    desc: Stop docker-compose and remove volumes
+    cmds:
+      - docker compose -f images/docker-compose.yaml down -v
+
+  compose:logs:
+    desc: Follow docker-compose logs
+    cmds:
+      - docker compose -f images/docker-compose.yaml logs -f
+
+  compose:test:
+    desc: Test docker-compose setup (start, health check, stop)
+    cmds:
+      - task: compose:up
+      - sleep 30
+      - curl -f http://localhost:{{.PORT}}/api/_health
+      - task: compose:down:clean
+
+  # =============================================================================
+  # __EGG_APP_NAME__ CLI Commands
+  # =============================================================================
+  swag:
+    desc: Generate Swagger documentation
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} swag'
+
+  db:migrate:
+    desc: 'Create a new migration (usage: task db:migrate -- migration_name)'
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} db migrate {{.CLI_ARGS}}'
+
+  db:up:
+    desc: Run database migrations up
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} db up -e {{.ENV | default "development"}}'
+
+  db:down:
+    desc: Run database migrations down
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} down -e {{.ENV | default "development"}}'
+
+  db:gen:
+    desc: Generate SQLC repository code
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} db generate'
+
+
+
+  bump:
+    desc: 'Bump patch version (usage: task bump or task bump -- -m for minor, -M for major)'
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} bump {{.CLI_ARGS}}'
+
+
+  bump:minor:
+    desc: Bump minor version
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} bump -m'
+
+
+  bump:major:
+    desc: Bump major version
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} bump -M'
+
+  version:
+
+    desc: Show current version
+    deps:
+      - build
+    cmds:
+      - '{{.BINARY_PATH}} version'
+
+  # =============================================================================
+  # Testing
+
+  # =============================================================================
+  test:
+    desc: Run all Go tests
+    cmds:
+      - go test -v ./...
+
+  test:coverage:
+    desc: Run tests with coverage report
+
+    cmds:
+      - go test -coverprofile=coverage.out ./...
+      - go tool cover -html=coverage.out -o coverage.html
+      - 'echo "Coverage report generated: coverage.html"'
+
+  test:race:
+    desc: Run tests with race detection
+    cmds:
+      - go test -race -v ./...
+
+  # =============================================================================
+  # CI/CD
+  # =============================================================================
+  ci:dry-run:
+    desc: Dry run GitHub Actions workflow locally (requires act)
+    preconditions:
+      - sh: command -v act
+
+        msg: "act is required. Install with: brew install act (macOS) or see https://github.com/nektos/act"
+    cmds:
+      - act -n
+
+  ci:test:
+    desc: Run GitHub Actions workflow locally (requires act)
+    preconditions:
+      - sh: command -v act
+
+
+
+
+        msg: "act is required. Install with: brew install act (macOS) or see https://github.com/nektos/act"
+    cmds:
+      - act
+
+  ci:publish:dry-run:
+    desc: Dry run the publish-docker workflow locally
+    preconditions:
+      - sh: command -v act
+        msg: "act is required"
+    cmds:
+      - act -n -W .github/workflows/publish-docker.yml
+
+  push:
+    desc: Push commits and tags to remote
+    cmds:
+      - git push
+      - git push --tags
+
+  # =============================================================================
+  # Setup & Utilities
+  # =============================================================================
+  setup:
+    desc: Install all dependencies (Go + frontend)
+    cmds:
+      - go mod download
+      - go mod tidy
+      - cd web && pnpm install
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf {{.BINARY_DIR}}
+      - rm -f coverage.out coverage.html
+
+  lint:
+    desc: Run Go linter
+    cmds:
+      - golangci-lint run ./...
+
+  lint:web:
+    desc: Run frontend linter (biome)
+    dir: web
+    cmds:
+      - pnpm check
+
+  fmt:
+    desc: Format Go code
+    cmds:
+      - go fmt ./...
+
+  fmt:web:
+    desc: Format frontend code
+    dir: web
+    cmds:
+      - pnpm check --write
+
+  # =============================================================================
+  # Release Workflow
+  # =============================================================================
+  release:
+    desc: Full release workflow (bump, commit, build, tag, push)
+    prompt: This will create a new release. Continue?
+    vars:
+      VERSION:
+        sh: grep 'semver:' config/development.yaml | awk '{print $2}'
+    cmds:
+      - task: bump
+      - git add -A
+      - 'git commit -m "chore: release v{{.VERSION}}"'
+      - task: docker:build
+      - task: docker:tag
+      - task: push
+
+  release:minor:
+    desc: Release with minor version bump (commit, build, tag, push)
+    prompt: This will create a new minor release. Continue?
+    vars:
+      VERSION:
+        sh: grep 'semver:' config/development.yaml | awk '{print $2}'
+    cmds:
+      - task: bump:minor
+      - git add -A
+      - 'git commit -m "chore: release v{{.VERSION}}"'
+      - task: docker:build
+      - task: docker:tag
+      - task: push

@@ -1,0 +1,96 @@
+# Docker Compose for __EGG_APP_NAME__
+# Run from project root: docker compose -f images/docker-compose.yaml up -d
+# Requires: .env file in project root (copy from .env.example and fill in values)
+
+name: __EGG_APP_NAME__
+
+services:
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB:       ${POSTGRES_DB:-appdb}
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-appdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Dragonfly (Redis-compatible cache) ─────────────────────────────────────
+  cache:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    restart: unless-stopped
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+    volumes:
+      - dragonfly_data:/data
+    ulimits:
+      memlock: -1
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "127.0.0.1", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  # ── MinIO (S3-compatible object storage) ───────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER:     ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+    ports:
+      - "${MINIO_HOST_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_HOST_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Application ────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    env_file:
+      - ../.env
+    environment:
+      # Internal hostnames override whatever is in .env
+      DB_HOST: db
+      DB_PORT: "5432"
+      EGG_DB_URL:      "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-appdb}"
+      EGG_CACHE_URL:   "redis://cache:6379"
+      EGG_S3_URL:      "http://minio:9000"
+      EGG_S3_SECURE:   "false"
+      EGG_S3_ACCESS:   "${MINIO_ROOT_USER:-minioadmin}"
+      EGG_S3_SECRET:   "${MINIO_ROOT_PASSWORD:-minioadmin123}"
+    ports:
+      - "${APP_HOST_PORT:-__EGG_PORT__}:__EGG_PORT__"
+
+volumes:
+  postgres_data:
+  dragonfly_data:
+  minio_data:

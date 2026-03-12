@@ -1,0 +1,98 @@
+version: 1.0
+name: egg-template-auth0
+description: Egg fullstack template with Auth0/OIDC authentication
+auth_provider: auth0
+
+placeholders:
+  - key: __EGG_NAMESPACE__
+    description: Go module namespace (e.g. github.com/you/myapp)
+    required: true
+  - key: __EGG_APP_NAME__
+    description: Application binary name
+    required: true
+  - key: __EGG_VERSION__
+    description: Semantic version
+    required: true
+  - key: __EGG_LICENSE__
+    description: License identifier (e.g. Apache-2.0, MIT)
+    required: true
+  - key: __EGG_AUTHOR__
+    description: Author name
+    required: true
+  - key: __EGG_YEAR__
+    description: Copyright year
+    required: true
+  - key: __EGG_PORT__
+    description: HTTP server port
+    required: true
+  - key: __EGG_AUTH0_DOMAIN__
+    description: Auth0 domain (e.g. your-tenant.us.auth0.com)
+    required: true
+  - key: __EGG_AUTH0_AUDIENCE__
+    description: Auth0 API audience identifier
+    required: true
+  - key: __EGG_AUTH0_CLIENT_ID__
+    description: Auth0 application client ID
+    required: true
+  - key: __EGG_AUTH0_CLIENT_SECRET__
+    description: Auth0 application client secret
+    required: true
+  - key: __EGG_DB_URL__
+    description: PostgreSQL connection URL
+    required: true
+  - key: __EGG_SQLC_REPO__
+    description: SQLC generated repository package path (relative to module root)
+    required: true
+  - key: __EGG_SQLC_SCHEMA__
+    description: Path to SQL schema file or directory
+    required: true
+  - key: __EGG_SQLC_TYPE__
+    description: SQLC output type (sql or go)
+    required: true
+  - key: __EGG_DB_QUERIES__
+    description: Path to SQL query files directory
+    required: true
+  - key: __EGG_NAMESPACE_OWNER__
+    description: GitHub username or org for container registry (e.g. yourusername)
+    required: true
+  - key: __EGG_MIGRATION_PROTO__
+    description: Goose migration driver (postgres, mysql, sqlite3)
+    required: true
+  - key: __EGG_MIGRATION_DEST__
+    description: Path to migrations directory
+    required: true
+  - key: __EGG_FRONTEND_DIR__
+    description: Path to frontend static files directory
+    required: false
+  - key: __EGG_FRONTEND_API__
+    description: Path to generated frontend API client directory
+    required: false
+  - key: __EGG_CACHE_URL__
+    description: Redis connection URL
+    required: false
+  - key: __EGG_S3_URL__
+    description: S3/MinIO endpoint URL
+    required: false
+  - key: __EGG_S3_ACCESS__
+    description: S3/MinIO access key
+    required: false
+  - key: __EGG_S3_SECRET__
+    description: S3/MinIO secret key
+    required: false
+
+path_rewrites:
+  - from: db/migrations
+    config_key: Database.Migration.Destination
+  - from: db/queries
+    config_key: Database.QueriesLocation
+
+binary_extensions:
+  - .png
+  - .jpg
+  - .jpeg
+  - .ico
+  - .woff
+  - .woff2
+  - .gif
+  - .webp
+  - .svg

@@ -1,0 +1,46 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="cloud-gradient" cx="100" cy="100" r="100" gradientUnits="userSpaceOnUse">
+      <stop offset="15%" style="stop-color:#0275ef;" />
+      <stop offset="60%" style="stop-color:#08ffe1;" />
+      <stop offset="100%" style="stop-color:#52fe8f;" />
+    </radialGradient>
+  </defs>
+  <g>
+  <path
+		  d="M 50 70 L 0 70 L 100 15 L 200 70 L 150 70"
+          stroke="url(#cloud-gradient)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"/>
+
+    <!-- Left vertical stroke of M -->
+    <path d="M 50 70 L 50 160" 
+          stroke="url(#cloud-gradient)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"/>
+    
+    <!-- Left diagonal going down (left part of V) -->
+    <path d="M 50 70 L 100 140" 
+          stroke="url(#cloud-gradient)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"/>
+    
+    <!-- Right diagonal going up (right part of V) -->
+    <path d="M 100 140 L 150 70" 
+          stroke="url(#cloud-gradient)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"/>
+    
+    <!-- Right vertical stroke of M -->
+    <path d="M 150 70 L 150 160" 
+          stroke="url(#cloud-gradient)" 
+          stroke-width="14" 
+          stroke-linecap="round" 
+          fill="none"/>
+    
+  </g>
+</svg>

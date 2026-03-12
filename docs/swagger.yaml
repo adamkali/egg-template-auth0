@@ -1,0 +1,2673 @@
+basePath: /api
+definitions:
+  AddUserWidgetRequest:
+    properties:
+      config:
+        items:
+          type: integer
+        type: array
+      height:
+        type: integer
+      is_visible:
+        type: boolean
+      position_x:
+        type: integer
+      position_y:
+        type: integer
+      schema_id:
+        type: string
+      schema_title:
+        type: string
+      width:
+        type: integer
+      z_index:
+        type: integer
+    type: object
+  BackgroundData:
+    properties:
+      filename:
+        type: string
+      url:
+        type: string
+    type: object
+  BackgroundResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/BackgroundData'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  BookmarkResponse:
+    properties:
+      data:
+        $ref: '#/definitions/repository.Bookmark'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  BookmarksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/repository.Bookmark'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  CoolifyActionResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.CoolifyActionData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  CoolifyWidgetApplication:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      description:
+        type: string
+      fqdn:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      redirect:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
+  CoolifyWidgetApplicationResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/CoolifyWidgetApplication'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  CoolifyWidgetService:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      service_type:
+        type: string
+      updated_at:
+        type: string
+      uuid:
+        type: string
+    type: object
+  CoolifyWidgetServiceResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/CoolifyWidgetService'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  CreateApiKeyRequest:
+    properties:
+      expiration:
+        type: string
+      name:
+        type: string
+      not_before:
+        type: string
+      read_access:
+        type: boolean
+      write_access:
+        type: boolean
+    type: object
+  DeleteUserResponse:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  GithubCommitsResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.GithubWidgetCommitsData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  GithubProfileResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.GithubWidgetProfileData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  GithubResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.GithubWidgetData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  LoginResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.UserData'
+      jwt:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  MoveBookmarkRequest:
+    properties:
+      bookmarkId:
+        type: string
+      newParentId:
+        description: The parent folder to move the bookmark to cannot be null
+        type: string
+      userId:
+        type: string
+    type: object
+  NewUserRequest:
+    properties:
+      email:
+        type: string
+      isAdmin:
+        type: boolean
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  StringResponse:
+    properties:
+      data:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  UpdateBookmarkRequest:
+    properties:
+      bookmarkId:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      userId:
+        type: string
+    type: object
+  UpdateCredentialsRequest:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      oldPassword:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  UpdateUserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.UserData'
+      jwt:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.UserData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  UsersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.UserData'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  WidgetResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.WidgetData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  repository.Bookmark:
+    properties:
+      created_datetime:
+        type: string
+      description:
+        type: string
+      folder_id:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      updated_datetime:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.CreateBookmarkParams:
+    properties:
+      folder_id:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.CreateFolderParams:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      parent_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.Folder:
+    properties:
+      created_datetime:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      parent_id:
+        type: string
+      updated_datetime:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.InsertNewTaskParams:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      task_type_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.Note:
+    properties:
+      content:
+        type: string
+      created_datetime:
+        type: string
+      description:
+        type: string
+      folder_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_datetime:
+        type: string
+      user_id:
+        type: string
+    type: object
+  repository.TaskType:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      show_in_available:
+        type: boolean
+      show_in_cancelled:
+        type: boolean
+      show_in_completed:
+        type: boolean
+      show_in_scheduled:
+        type: boolean
+    type: object
+  repository.UpdateTaskContentParams:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  requests.MoveFolderRequest:
+    properties:
+      folderId:
+        type: string
+      newParentId:
+        type: string
+      userId:
+        type: string
+    type: object
+  requests.UpdateFolderRequest:
+    properties:
+      description:
+        type: string
+      folderId:
+        type: string
+      name:
+        type: string
+      userId:
+        type: string
+    type: object
+  responses.ApiKeyResponse:
+    properties:
+      data:
+        $ref: '#/definitions/services.ApiKeyDTO'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.ApiKeysResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/services.ApiKeyDTO'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.CoolifyActionData:
+    properties:
+      action:
+        type: string
+      app_uuid:
+        type: string
+      deployment_id:
+        type: string
+    type: object
+  responses.FolderData:
+    properties:
+      bookmarks:
+        items:
+          $ref: '#/definitions/repository.Bookmark'
+        type: array
+      children:
+        items:
+          $ref: '#/definitions/repository.Folder'
+        type: array
+      created_datetime:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      notes:
+        items:
+          $ref: '#/definitions/repository.Note'
+        type: array
+      parent_id:
+        type: string
+      updated_datetime:
+        type: string
+      user_id:
+        type: string
+    type: object
+  responses.FolderResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.FolderData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.FoldersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.FolderData'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.GithubWidgetCommitsData:
+    properties:
+      total:
+        type: integer
+      weeks:
+        items:
+          $ref: '#/definitions/responses.GithubWidgetCommitsWeekData'
+        type: array
+    type: object
+  responses.GithubWidgetCommitsDayData:
+    properties:
+      color:
+        type: string
+      count:
+        type: integer
+      date:
+        type: string
+      percent:
+        type: integer
+    type: object
+  responses.GithubWidgetCommitsWeekData:
+    properties:
+      friday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      monday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      saturday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      sunday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      thursday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      tuesday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      wednesday:
+        $ref: '#/definitions/responses.GithubWidgetCommitsDayData'
+      week_start:
+        type: string
+    type: object
+  responses.GithubWidgetData:
+    properties:
+      commits:
+        $ref: '#/definitions/responses.GithubWidgetCommitsData'
+      profile:
+        $ref: '#/definitions/responses.GithubWidgetProfileData'
+    type: object
+  responses.GithubWidgetProfileData:
+    properties:
+      avatar_url:
+        type: string
+      bio:
+        type: string
+      company:
+        type: string
+      followers:
+        type: integer
+      following:
+        type: integer
+      html_url:
+        type: string
+      name:
+        type: string
+      public_gists:
+        type: integer
+      public_repos:
+        type: integer
+    type: object
+  responses.TaskResponse:
+    properties:
+      data:
+        $ref: '#/definitions/services.TaskDTO'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.TasksResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/services.TaskDTO'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.UserData:
+    properties:
+      admin:
+        type: boolean
+      background:
+        type: string
+      created_datetime:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      profile_pic_url:
+        type: string
+      updated_datetime:
+        type: string
+      username:
+        type: string
+    type: object
+  responses.UserWidgetData:
+    properties:
+      config:
+        additionalProperties: {}
+        type: object
+      height:
+        type: integer
+      id:
+        type: string
+      is_visible:
+        type: boolean
+      name:
+        type: string
+      position_x:
+        type: integer
+      position_y:
+        type: integer
+      schema_id:
+        type: string
+      schema_title:
+        type: string
+      user_id:
+        type: string
+      width:
+        type: integer
+      z_index:
+        type: integer
+    type: object
+  responses.UserWidgetResponse:
+    properties:
+      data:
+        $ref: '#/definitions/responses.UserWidgetData'
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.UserWidgetsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.UserWidgetData'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  responses.WidgetData:
+    properties:
+      id:
+        type: string
+      layout:
+        $ref: '#/definitions/schemas.WidgetLayout'
+      properties:
+        additionalProperties:
+          $ref: '#/definitions/schemas.WidgetProperty'
+        type: object
+      required:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  responses.WidgetsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/responses.WidgetData'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  schemas.WidgetLayout:
+    properties:
+      defaultSize:
+        $ref: '#/definitions/schemas.WidgetSize'
+      maxSize:
+        $ref: '#/definitions/schemas.WidgetSize'
+      minSize:
+        $ref: '#/definitions/schemas.WidgetSize'
+      resizable:
+        type: boolean
+    type: object
+  schemas.WidgetProperty:
+    properties:
+      description:
+        type: string
+      enum:
+        items: {}
+        type: array
+      format:
+        type: string
+      label:
+        type: string
+      type:
+        type: string
+      value:
+        description: Changed from string to any to support different value types (string,
+          bool, number)
+    type: object
+  schemas.WidgetSize:
+    properties:
+      height:
+        type: integer
+      width:
+        type: integer
+    type: object
+  services.ApiKeyDTO:
+    properties:
+      created_at:
+        type: string
+      expiration:
+        type: string
+      key_id:
+        type: string
+      name:
+        type: string
+      not_before:
+        type: string
+      raw_key:
+        type: string
+      read_access:
+        type: boolean
+      write_access:
+        type: boolean
+    type: object
+  services.TaskDTO:
+    properties:
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      due_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      task_type:
+        $ref: '#/definitions/repository.TaskType'
+      task_type_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+info:
+  contact:
+    name: Adam Kalinowski
+    url: https://__EGG_NAMESPACE__
+  description: This is the swagger page for the Project __EGG_APP_NAME__ generated with Egg-go.
+    use this to test your database connection
+  license:
+    name: MIT
+  title: __EGG_APP_NAME__
+  version: 0.0.1
+paths:
+  /apikeys:
+    get:
+      description: List all API Keys for the current user
+      operationId: ListApiKeys
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ApiKeysResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.ApiKeysResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ApiKeysResponse'
+      summary: List API Keys
+      tags:
+      - ApiKeys
+    post:
+      consumes:
+      - application/json
+      description: Create a new API Key for programmatic access
+      operationId: CreateApiKey
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: CreateApiKeyRequest
+        in: body
+        name: CreateApiKeyRequest
+        required: true
+        schema:
+          $ref: '#/definitions/CreateApiKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ApiKeyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ApiKeyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.ApiKeyResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ApiKeyResponse'
+      summary: Create a new API Key
+      tags:
+      - ApiKeys
+  /apikeys/{keyId}:
+    delete:
+      description: Delete an API Key by its ID
+      operationId: DeleteApiKey
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: API Key ID
+        in: path
+        name: keyId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Delete an API Key
+      tags:
+      - ApiKeys
+  /background:
+    get:
+      description: Get Default Background
+      operationId: GetDefaultBackground
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Get Default Background
+      tags:
+      - Background
+  /background/choices:
+    get:
+      description: Get Background Choices
+      operationId: GetBackgroundChoices
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+      summary: Get Background Choices that ae loaded into the server.
+      tags:
+      - Background
+  /bookmarks:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        Move a Bookmark by Authorization Header, and my a
+        ParentFolderId [parent_id].
+      operationId: MoveBookmark
+      parameters:
+      - description: Move Bookmark Request
+        in: body
+        name: MoveBookmarkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/MoveBookmarkRequest'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+      summary: Move a Bookmark
+      tags:
+      - Bookmarks
+    post:
+      consumes:
+      - application/json
+      description: Create a new Bookmark by Authorization Header
+      operationId: CreateBookmark
+      parameters:
+      - description: CreateBookmarkRequest
+        in: body
+        name: CreateBookmarkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/repository.CreateBookmarkParams'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+      summary: Create a new Bookmark
+      tags:
+      - Bookmarks
+  /bookmarks/{bookmark_id}:
+    put:
+      consumes:
+      - application/json
+      description: Update a Bookmark's name and link by Authorization Header
+      operationId: UpdateBookmark
+      parameters:
+      - description: Update Bookmark Request
+        in: body
+        name: UpdateBookmarkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateBookmarkRequest'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Bookmark ID
+        in: path
+        name: bookmark_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BookmarkResponse'
+      summary: Update a Bookmark
+      tags:
+      - Bookmarks
+  /bookmarks/folder/{bookmark_id}:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Delete a Bookmark by Authorization Header, and my a
+        ParentFolderId [parent_id].
+      operationId: DeleteBookmark
+      parameters:
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Parent Folder ID
+        in: path
+        name: bookmark_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+      summary: Delete a Bookmark
+      tags:
+      - Bookmarks
+  /bookmarks/folder/{parent_id}:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Get all Bookmarks by Authorization Header and by the
+        ParentFolderId [parent_id]
+      operationId: GetBookmarks
+      parameters:
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Parent Folder ID
+        in: path
+        name: parent_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BookmarksResponse'
+      summary: Get Bookmarks By Folder ID
+      tags:
+      - Bookmarks
+  /folders:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Get the Root Folders associated with the user by Authorization Header
+        and will also try to get the children of the folder as well
+      operationId: GetRootFolders
+      parameters:
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FoldersResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.FoldersResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FoldersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FoldersResponse'
+      summary: Get the Root Folders associated with the user
+      tags:
+      - Folders
+    patch:
+      consumes:
+      - application/json
+      description: Move a Folder by Authorization Header
+      operationId: MoveFolder
+      parameters:
+      - description: Move Folder Request
+        in: body
+        name: MoveFolderRequest
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MoveFolderRequest'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+      summary: Move a Folder
+      tags:
+      - Folders
+    post:
+      consumes:
+      - application/json
+      description: Create a new Folder by Authorization Header
+      operationId: CreateFolder
+      parameters:
+      - description: Create Folder Request
+        in: body
+        name: CreateFolderRequest
+        required: true
+        schema:
+          $ref: '#/definitions/repository.CreateFolderParams'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+      summary: Create a new Folder
+      tags:
+      - Folders
+  /folders/{folder_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a Folder by Authorization Header and tries to cascade delete
+      operationId: DeleteFolder
+      parameters:
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+      summary: Delete a Folder
+      tags:
+      - Folders
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Get the Folders associated with the user under A Parent Folder by Authorization Header
+        and will also try to get the children of the folder as well
+      operationId: GetFolders
+      parameters:
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+      summary: Get the Folders associated with the user under A Parent Folder
+      tags:
+      - Folders
+    put:
+      consumes:
+      - application/json
+      description: Update a Folder's name and description by Authorization Header
+      operationId: UpdateFolder
+      parameters:
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Update Folder Request
+        in: body
+        name: UpdateFolderRequest
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateFolderRequest'
+      - default: '"Bearer token"'
+        description: Authorization Header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.FolderResponse'
+      summary: Update a Folder
+      tags:
+      - Folders
+  /tasks:
+    get:
+      description: Read all tasks that are available to the user
+      operationId: ReadTasks
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+      summary: Read all tasks
+      tags:
+      - Tasks
+    post:
+      description: Create a new Task by Authorization Header
+      operationId: CreateTask
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: CreateTaskRequest
+        in: body
+        name: CreateTaskRequest
+        required: true
+        schema:
+          $ref: '#/definitions/repository.InsertNewTaskParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+      summary: Create a new Task
+      tags:
+      - Tasks
+    put:
+      description: Update a Task by Authorization Header
+      operationId: UpdateTask
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: UpdateTaskRequest
+        in: body
+        name: UpdateTaskRequest
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UpdateTaskContentParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+      summary: Update a Task
+      tags:
+      - Tasks
+  /tasks/{taskId}:
+    delete:
+      description: Delete a Task by Authorization Header
+      operationId: DeleteTask
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: TaskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Delete a Task
+      tags:
+      - Tasks
+    get:
+      description: Read by a TaskID
+      operationId: ReadTask
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: TaskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+      summary: Read by a TaskID
+      tags:
+      - Tasks
+    put:
+      description: Update Task Status with a Status Char and optional Due Date
+      operationId: UpdateTaskStatus
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: TaskID
+        in: path
+        name: taskId
+        required: true
+        type: string
+      - default: a
+        description: Status char
+        in: query
+        name: status
+        required: true
+        type: string
+      - description: Due Date
+        in: query
+        name: dueDate
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TaskResponse'
+      summary: Update Task Status
+      tags:
+      - Tasks
+  /tasks/queue:
+    get:
+      description: Get Tasks By Queue Type with a Queue Type Char
+      operationId: GetTasksByQueueType
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: a
+        description: Queue Type Char
+        in: query
+        name: queueType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+      summary: Get Tasks By Queue Type
+      tags:
+      - Tasks
+  /tasks/status:
+    get:
+      description: Get Tasks By Task Type with a Task Type Char
+      operationId: GetTasksByTaskType
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: a
+        description: Task Type Char
+        in: query
+        name: taskType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.TasksResponse'
+      summary: Get Tasks By Task Type
+      tags:
+      - Tasks
+  /users/:
+    get:
+      description: Get All Users. Must be Admin using the new mediator pattern
+      operationId: GetUsers
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UsersResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/UsersResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/UsersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/UsersResponse'
+      summary: Get All Users
+      tags:
+      - Users
+  /users/{user_id}:
+    delete:
+      description: get string by ID
+      operationId: DeleteUserByUUID
+      parameters:
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: User Id
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - default: '"Bearer token"'
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeleteUserResponse'
+      summary: Delete User by their UUID
+      tags:
+      - Users
+  /users/background:
+    get:
+      description: Get User Background Choice
+      operationId: GetUserBackground
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: background
+        in: query
+        name: background
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Get User Background Choice
+      tags:
+      - Users
+    patch:
+      description: |-
+        Set User Background Choice by background name
+        by query param.
+      operationId: SetUserBackground
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: background
+        in: query
+        name: background
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Set User Background
+      tags:
+      - Users
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a Background and set the User.Background  to be the uploaded
+        background
+      operationId: UploadBackground
+      parameters:
+      - description: this is a test file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Upload Background
+      tags:
+      - Users
+  /users/background/choices:
+    get:
+      description: Get User Backgrounds Uploaded to the server
+      operationId: GetUserBackgroundChoices
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/BackgroundResponse'
+      summary: Get User Background Choices
+      tags:
+      - Users
+  /users/creds:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Update User Credentials by id, Must be the same user in the jwt
+        that is being updated
+      operationId: UpdateUser
+      parameters:
+      - description: Update User Credentials Request
+        in: body
+        name: UpdateCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateCredentialsRequest'
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UpdateUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/UpdateUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/UpdateUserResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/UpdateUserResponse'
+      summary: Update User Credentials
+      tags:
+      - Users
+  /users/current:
+    get:
+      description: Get the Current User by the uuid storred in the Claims header
+      operationId: GetCurrentLoggedInUser
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/UserResponse'
+      summary: Get Current User
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: to a user account with either email or username
+      operationId: Login
+      parameters:
+      - description: Log in request
+        in: body
+        name: LoginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/LoginResponse'
+      summary: Login
+      tags:
+      - Users
+  /users/profile:
+    get:
+      description: Get User Profile by Authorization Header
+      operationId: GetProfilePicture
+      parameters:
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/StringResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/StringResponse'
+      summary: Get User Profile by Authorization Header
+      tags:
+      - Users
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file
+      operationId: UploadProfilePicture
+      parameters:
+      - description: this is a test file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - default: Bearer token
+        description: admin header
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/UserResponse'
+      summary: Upload file
+      tags:
+      - Users
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Signup using the requests.NewUserRequest
+      operationId: Signup
+      parameters:
+      - description: Signup Request
+        in: body
+        name: SignupRequest
+        required: true
+        schema:
+          $ref: '#/definitions/NewUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/LoginResponse'
+      summary: Signup to the app
+      tags:
+      - Users
+  /widgets:
+    get:
+      description: |-
+        Get a Users Widgets by their auth token
+        and return the list of widgets associated
+        with the user account in the request params.
+      operationId: GetUserWidgets
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserWidgetsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UserWidgetsResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.UserWidgetsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.UserWidgetsResponse'
+      summary: Get a Users Widgets
+      tags:
+      - Widgets
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Add a Users Widget by their auth token.
+        The config is defined by the configuration parameters as defined by the user and the schema.
+      operationId: AddUserWidget
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Add Widget Request
+        in: body
+        name: AddUserWidgetRequest
+        required: true
+        schema:
+          $ref: '#/definitions/AddUserWidgetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+      summary: Add a Users Widget
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}:
+    get:
+      description: |-
+        Get a Users Widget by their auth token
+        and a path parameter and return the
+        widget from the database.
+      operationId: GetUserWidget
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.UserWidgetResponse'
+      summary: Get a Users Widget
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/coolify/applications:
+    get:
+      description: Get a Users Coolify Applications by their auth token
+      operationId: GetUserCoolifyApplications
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoolifyWidgetApplicationResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/CoolifyWidgetApplicationResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/CoolifyWidgetApplicationResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CoolifyWidgetApplicationResponse'
+      summary: Get a Users Coolify Applications
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/coolify/applications/{app_uuid}/restart:
+    post:
+      description: Restart a Coolify Application by app UUID
+      operationId: RestartCoolifyApplication
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      - description: Application UUID
+        in: path
+        name: app_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+      summary: Restart a Coolify Application
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/coolify/applications/{app_uuid}/start:
+    post:
+      description: Start a Coolify Application by app UUID
+      operationId: StartCoolifyApplication
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      - description: Application UUID
+        in: path
+        name: app_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+      summary: Start a Coolify Application
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/coolify/applications/{app_uuid}/stop:
+    post:
+      description: Stop a Coolify Application by app UUID
+      operationId: StopCoolifyApplication
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      - description: Application UUID
+        in: path
+        name: app_uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CoolifyActionResponse'
+      summary: Stop a Coolify Application
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/coolify/services:
+    get:
+      description: Get a Users Coolify Services by their auth token
+      operationId: GetUserCoolifyServices
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoolifyWidgetServiceResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/CoolifyWidgetServiceResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/CoolifyWidgetServiceResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/CoolifyWidgetServiceResponse'
+      summary: Get a Users Coolify Services
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/github/commits:
+    get:
+      description: |-
+        Get a Users Github Commits Widget by their auth token
+        and a path parameter to return only the commits data.
+        This endpoint fetches commit history and may take longer.
+      operationId: GetGithubCommitsWidgetData
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GithubCommitsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/GithubCommitsResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/GithubCommitsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GithubCommitsResponse'
+      summary: Get a Users Github Commits Widget Data
+      tags:
+      - Widgets
+  /widgets/{user_widget_id}/github/profile:
+    get:
+      description: |-
+        Get a Users Github Profile Widget by their auth token
+        and a path parameter to return only the profile data.
+        This is a fast endpoint that returns profile info quickly.
+      operationId: GetGithubProfileWidgetData
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GithubProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/GithubProfileResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/GithubProfileResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GithubProfileResponse'
+      summary: Get a Users Github Profile Widget Data
+      tags:
+      - Widgets
+  /widgets/github/{user_widget_id}:
+    get:
+      description: |-
+        Get a Users Github Widget by their auth token
+        and a path parameter to return the GithubWidgetData
+        This is a special widget that needs authorization outside of
+        the application, so we use the github api to get the data.
+      operationId: GetGithubWidgetData
+      parameters:
+      - default: Bearer token
+        description: auth header
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: '"e38e78a4-2ca3-4c59-a3ea-a2019866e593"'
+        description: Widget Id
+        in: path
+        name: user_widget_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GithubResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/GithubResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/GithubResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GithubResponse'
+      summary: Get a Users Github Widget
+      tags:
+      - Widgets
+  /widgets/schemas:
+    get:
+      description: |-
+        Get all embeded widget schemas from the Schema
+        Storage
+      operationId: GetWidgetSchemas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.WidgetsResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.WidgetsResponse'
+      summary: Get Widget Schemas
+      tags:
+      - Widgets
+  /widgets/schemas/{schema_id}:
+    get:
+      description: |-
+        Get embeded widget schema from the Schema
+        Storage by its identifier
+      operationId: GetWidgetSchemaByID
+      parameters:
+      - description: Widget Schema Id
+        in: path
+        name: schema_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/WidgetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/WidgetResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/WidgetResponse'
+      summary: Get Widget Schema by ID
+      tags:
+      - Widgets
+schemes:
+- http
+swagger: "2.0"

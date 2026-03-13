@@ -10,59 +10,96 @@ import (
 	"__EGG_NAMESPACE__/db/repository"
 )
 
-// MockAuthService provides an in-memory implementation of IAuthService for testing
+// MockAuthService provides an in-memory implementation of IAuthService for testing.
 type MockAuthService struct {
 	ctx   context.Context
 	mutex sync.RWMutex
-	
+
 	// Test behavior controls
-	ShouldFailCreate      bool
-	ShouldFailUpdate      bool
-	ShouldFailCheckToken  bool
-	
+	ShouldFailCreate    bool
+	ShouldFailUpdate    bool
+	ShouldFailCheckToken bool
+	ShouldFailCallback  bool
+
 	CreateErrorMessage     string
 	UpdateErrorMessage     string
 	CheckTokenErrorMessage string
-	
+	CallbackErrorMessage   string
+
 	// Test data tracking
 	CreateCallCount     int
 	UpdateCallCount     int
 	CheckTokenCallCount int
-	
-	LastCreateUser     *repository.User
-	LastUpdateUser     repository.User
-	LastCheckToken     string
+	CallbackCallCount   int
+
+	LastCreateUser    *repository.User
+	LastUpdateUser    repository.User
+	LastCheckToken    string
+	LastCallbackCode  string
+
+	// Configurable return values for Auth0 flow
+	MockLoginURL   string
+	MockSignupURL  string
+	MockClaims     *CustomJwt
 }
 
-// CreateMockAuthService creates a new MockAuthService with default error messages
+// CreateMockAuthService creates a new MockAuthService with default settings.
 func CreateMockAuthService(ctx context.Context, pool interface{}) *MockAuthService {
 	return &MockAuthService{
 		ctx:                    ctx,
 		CreateErrorMessage:     "Mock Create failure",
-		UpdateErrorMessage:     "Mock Update failure", 
+		UpdateErrorMessage:     "Mock Update failure",
 		CheckTokenErrorMessage: "Mock CheckToken failure",
+		CallbackErrorMessage:   "Mock Callback failure",
+		MockLoginURL:           "https://mock-auth0.example.com/authorize?login",
+		MockSignupURL:          "https://mock-auth0.example.com/authorize?signup",
+		MockClaims: &CustomJwt{
+			Sub:   "auth0|mock-user-id",
+			Email: "mock@example.com",
+			Name:  "Mock User",
+		},
 	}
 }
 
-// Reset clears call tracking and resets test data
+// Reset clears call tracking and resets failure flags.
 func (m *MockAuthService) Reset() {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
-	
-	// Reset call counts
+
 	m.CreateCallCount = 0
 	m.UpdateCallCount = 0
 	m.CheckTokenCallCount = 0
-	
-	// Reset last call parameters
+	m.CallbackCallCount = 0
+
 	m.LastCreateUser = nil
 	m.LastUpdateUser = repository.User{}
 	m.LastCheckToken = ""
-	
-	// Reset failure flags
+	m.LastCallbackCode = ""
+
 	m.ShouldFailCreate = false
 	m.ShouldFailUpdate = false
 	m.ShouldFailCheckToken = false
+	m.ShouldFailCallback = false
+}
+
+func (m *MockAuthService) LoginURL() string {
+	return m.MockLoginURL
+}
+
+func (m *MockAuthService) SignupURL() string {
+	return m.MockSignupURL
+}
+
+func (m *MockAuthService) Callback(ctx context.Context, code string) (*CustomJwt, error) {
+	m.mutex.Lock()
+	m.CallbackCallCount++
+	m.LastCallbackCode = code
+	m.mutex.Unlock()
+
+	if m.ShouldFailCallback {
+		return nil, errors.New(m.CallbackErrorMessage)
+	}
+	return m.MockClaims, nil
 }
 
 func (m *MockAuthService) Create(user *repository.User) (*string, error) {
@@ -70,12 +107,10 @@ func (m *MockAuthService) Create(user *repository.User) (*string, error) {
 	m.CreateCallCount++
 	m.LastCreateUser = user
 	m.mutex.Unlock()
-	
+
 	if m.ShouldFailCreate {
 		return nil, errors.New(m.CreateErrorMessage)
 	}
-	
-	// create a dummy token that is 64 characters long
 	token := "a============================================================//a"
 	return &token, nil
 }
@@ -85,12 +120,10 @@ func (m *MockAuthService) Update(user repository.User) (*string, error) {
 	m.UpdateCallCount++
 	m.LastUpdateUser = user
 	m.mutex.Unlock()
-	
+
 	if m.ShouldFailUpdate {
 		return nil, errors.New(m.UpdateErrorMessage)
 	}
-	
-	// create a dummy token that is 64 characters long
 	token := "a============================================================//a"
 	return &token, nil
 }
@@ -100,10 +133,9 @@ func (m *MockAuthService) CheckToken(token string) error {
 	m.CheckTokenCallCount++
 	m.LastCheckToken = token
 	m.mutex.Unlock()
-	
+
 	if m.ShouldFailCheckToken {
 		return errors.New(m.CheckTokenErrorMessage)
 	}
-	
 	return nil
 }

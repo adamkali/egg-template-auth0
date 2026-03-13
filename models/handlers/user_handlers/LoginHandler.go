@@ -3,23 +3,22 @@
 package user_handlers
 
 import (
-	"fmt"
+	"net/http"
 
-	"__EGG_NAMESPACE__/db/repository"
 	"__EGG_NAMESPACE__/models/handlers"
-	"__EGG_NAMESPACE__/models/requests"
 	"__EGG_NAMESPACE__/models/responses"
 	"__EGG_NAMESPACE__/services"
 	"github.com/labstack/echo/v4"
 )
 
+// LoginHandler redirects the client to the Auth0 authorization endpoint.
+// After successful authentication, Auth0 will redirect back to the callback URL.
 type LoginHandler struct {
-	authenticated    *repository.User
-	token            *string
-	ctx              echo.Context
-	code             int
-	err              error
-	r                *services.Registrar
+	redirectURL string
+	ctx         echo.Context
+	code        int
+	err         error
+	r           *services.Registrar
 }
 
 func NewLoginHandler(
@@ -27,12 +26,9 @@ func NewLoginHandler(
 	registrar *services.Registrar,
 ) *LoginHandler {
 	return &LoginHandler{
-		ctx:              ctx,
-		code:             200,
-		authenticated:    nil,
-		token:            nil,
-		err:              nil,
-		r:                registrar,
+		ctx:  ctx,
+		code: http.StatusTemporaryRedirect,
+		r:    registrar,
 	}
 }
 
@@ -41,48 +37,19 @@ func LoginJsonHandler(ctx echo.Context, r *services.Registrar) error {
 }
 
 func (h *LoginHandler) Handle() handlers.IHandler {
-	request := new(requests.LoginRequest)
-	var err error
-	if request, err = h.r.ValidatorService.ValidateLoginRequest(h.ctx); err != nil {
-		return handlers.Lock(h, 400, err)
-	}
-	h.authenticated, err = h.r.UserService.Login(request)
-	if err != nil {
-		return handlers.Lock(h, 401, err)
-	}
-	if h.authenticated == nil {
-		return handlers.Lock(h, 401, fmt.Errorf("invalid credentials"))
-	}
-	fmt.Println(h.authenticated)
-	h.token, err = h.r.AuthService.Update(*h.authenticated)
-	if err != nil {
-		return handlers.Lock(h, 500, err)
-	}
+	h.redirectURL = h.r.AuthService.LoginURL()
 	return h
 }
 
 func (h *LoginHandler) JSON() error {
-	var jwt string
-	if h.token == nil {
-		jwt = ""
-	} else {
-		jwt = *h.token
-	}
-	if h.err == nil {
-		return responses.NewLoginResponse().Successful(h.ctx, h.authenticated, jwt)
-	} else {
+	if h.err != nil {
 		return responses.NewLoginResponse().Fail(h.ctx, h.code, h.err)
 	}
+	return h.ctx.Redirect(http.StatusTemporaryRedirect, h.redirectURL)
 }
 
 func (h *LoginHandler) Data() any {
-	return struct {
-		Authenticated *repository.User
-		Token         *string
-	}{
-		Authenticated: h.authenticated,
-		Token:         h.token,
-	}
+	return h.redirectURL
 }
 
 func (h *LoginHandler) SetCode(code int) handlers.IHandler {

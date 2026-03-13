@@ -38,37 +38,48 @@ func (UserController *UserController) DeleteUser(ctx echo.Context) error {
 	return handlers.DeleteUserJsonHandler(ctx, UserController.Registrar)
 }
 
-// @Summary Signup to the app
-// @Description Signup using the requests.NewUserRequest
+// @Summary Signup via Auth0
+// @Description Redirects the client to Auth0 Universal Login with screen_hint=signup
+// @Description so the registration form is shown directly.
 //
 // @ID          Signup
 // @Tags        Users
-// @Accept      json
 // @Produce     json
-// @Param       SignupRequest   body        NewUserRequest          true "Signup Request"
-// @Success     200             {object}    responses.LoginResponse
-// @Failure     400             {object}    responses.LoginResponse
+// @Success     307             "Redirect to Auth0 signup"
 // @Failure     500             {object}    responses.LoginResponse
-// @Router      /users/signup   [post]
+// @Router      /users/signup   [get]
 func (UserController *UserController) Signup(ctx echo.Context) error {
 	return handlers.RegisterJsonHandler(ctx, UserController.Registrar)
 }
 
-// @Summary Login
-// @Description to a user account with either email or username
+// @Summary Login via Auth0
+// @Description Redirects the client to Auth0 Universal Login.
+// @Description After authentication, Auth0 redirects back to the callback URL.
 //
 // @ID          Login
 // @Tags        Users
-// @Accept      json
 // @Produce     json
-// @Param       LoginRequest body           LoginRequest            true "Log in request"
-// @Success     200             {object}    responses.LoginResponse
-// @Failure     400             {object}    responses.LoginResponse
-// @Failure     401             {object}    responses.LoginResponse
+// @Success     307             "Redirect to Auth0 login"
 // @Failure     500             {object}    responses.LoginResponse
-// @Router      /users/login    [post]
+// @Router      /users/login    [get]
 func (uc *UserController) Login(ctx echo.Context) error {
 	return handlers.LoginJsonHandler(ctx, uc.Registrar)
+}
+
+// @Summary Auth0 OAuth2 Callback
+// @Description Handles the redirect from Auth0 after login or signup.
+// @Description Exchanges the authorization code for tokens and returns user claims.
+//
+// @ID          Callback
+// @Tags        Users
+// @Produce     json
+// @Param       code    query    string  true  "Authorization code from Auth0"
+// @Success     200     {object} map[string]any
+// @Failure     400     {object} responses.LoginResponse
+// @Failure     500     {object} responses.LoginResponse
+// @Router      /users/callback [get]
+func (uc *UserController) Callback(ctx echo.Context) error {
+	return handlers.CallbackJsonHandler(ctx, uc.Registrar)
 }
 
 // @Summary Get Current User
@@ -159,8 +170,9 @@ func (uc UserController) Attatch(e *echo.Echo, middlewares ...echo.MiddlewareFun
 	// Register the namespaces for the endopoints
 	api := e.Group("/api" + uc.Name)
 	api.GET("", uc.GetUsers, middlewares...)
-	api.POST("/login", uc.Login)
-	api.POST("/signup", uc.Signup)
+	api.GET("/login", uc.Login)
+	api.GET("/signup", uc.Signup)
+	api.GET("/callback", uc.Callback)
 	api.GET("/current", uc.GetCurrent, middlewares...)
 	api.POST("/profile", uc.UploadProfilePicture, middlewares...)
 	api.POST("/creds", uc.UpdateUser, middlewares...)

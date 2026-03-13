@@ -4,6 +4,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"__EGG_NAMESPACE__/cmd/configuration"
 	"__EGG_NAMESPACE__/db/repository"
@@ -14,8 +15,8 @@ import (
 )
 
 // AuthService provides authentication services backed by Auth0 OIDC.
-// Token issuance and verification are handled by Auth0; these methods satisfy
-// the IAuthService interface but delegate token operations to Auth0.
+// Token issuance is handled by Auth0; this service manages the OAuth2 flow
+// and satisfies the IAuthService interface.
 type AuthService struct {
 	ctx      context.Context
 	db       *pgxpool.Pool
@@ -51,22 +52,64 @@ func CreateAuthService(
 	}
 }
 
-// Create is called when a new user record should be persisted locally.
-// With Auth0, token issuance is handled by Auth0, so an empty string is returned.
+// LoginURL returns the Auth0 authorization URL the client should redirect to.
+func (a *AuthService) LoginURL() string {
+	return a.oathc.AuthCodeURL("state-token", oauth2.AccessTypeOnline)
+}
+
+// SignupURL returns the Auth0 authorization URL with screen_hint=signup so
+// Auth0 Universal Login opens the registration form directly.
+func (a *AuthService) SignupURL() string {
+	return a.oathc.AuthCodeURL(
+		"state-token",
+		oauth2.AccessTypeOnline,
+		oauth2.SetAuthURLParam("screen_hint", "signup"),
+	)
+}
+
+// Callback exchanges the authorization code for an OAuth2 token set, verifies
+// the ID token using the Auth0 OIDC provider, and returns the JWT claims.
+func (a *AuthService) Callback(ctx context.Context, code string) (*CustomJwt, error) {
+	oauthToken, err := a.oathc.Exchange(ctx, code)
+	if err != nil {
+		return nil, fmt.Errorf("AuthService.Callback: exchange code: %w", err)
+	}
+
+	rawIDToken, ok := oauthToken.Extra("id_token").(string)
+	if !ok {
+		return nil, fmt.Errorf("AuthService.Callback: no id_token in response")
+	}
+
+	verifier := a.provider.Verifier(&oidc.Config{ClientID: a.oathc.ClientID})
+	idToken, err := verifier.Verify(ctx, rawIDToken)
+	if err != nil {
+		return nil, fmt.Errorf("AuthService.Callback: verify id_token: %w", err)
+	}
+
+	var claims CustomJwt
+	if err := idToken.Claims(&claims); err != nil {
+		return nil, fmt.Errorf("AuthService.Callback: extract claims: %w", err)
+	}
+
+	return &claims, nil
+}
+
+// Create satisfies IAuthService. With Auth0, token issuance is handled by Auth0,
+// so an empty string token is returned after recording the user.
 func (a *AuthService) Create(user *repository.User) (*string, error) {
 	empty := ""
 	return &empty, nil
 }
 
-// Update is called when an existing user re-authenticates.
-// With Auth0, token issuance is handled by Auth0, so an empty string is returned.
+// Update satisfies IAuthService. With Auth0, token issuance is handled by Auth0,
+// so an empty string token is returned.
 func (a *AuthService) Update(user repository.User) (*string, error) {
 	empty := ""
 	return &empty, nil
 }
 
 // CheckToken is a no-op for Auth0: the OIDC middleware (AuthMiddlewareConfig)
-// already validates the token before any handler is invoked.
+// already validated the bearer token before any handler is invoked.
 func (a *AuthService) CheckToken(token string) error {
 	return nil
 }

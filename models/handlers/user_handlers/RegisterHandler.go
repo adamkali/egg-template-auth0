@@ -3,23 +3,22 @@
 package user_handlers
 
 import (
-	"fmt"
+	"net/http"
 
-	"__EGG_NAMESPACE__/db/repository"
 	"__EGG_NAMESPACE__/models/handlers"
-	"__EGG_NAMESPACE__/models/requests"
 	"__EGG_NAMESPACE__/models/responses"
 	"__EGG_NAMESPACE__/services"
 	"github.com/labstack/echo/v4"
 )
 
+// RegisterHandler redirects the client to Auth0 with screen_hint=signup so the
+// Universal Login page opens the registration form directly.
 type RegisterHandler struct {
-	newUser          *repository.User
-	token            *string
-	ctx              echo.Context
-	err              error
-	code             int
-	r                *services.Registrar
+	redirectURL string
+	ctx         echo.Context
+	err         error
+	code        int
+	r           *services.Registrar
 }
 
 func NewRegisterHandler(
@@ -27,12 +26,9 @@ func NewRegisterHandler(
 	r *services.Registrar,
 ) *RegisterHandler {
 	return &RegisterHandler{
-		ctx:              ctx,
-		code:             200,
-		newUser:          nil,
-		token:            nil,
-		err:              nil,
-		r:                r,
+		ctx:  ctx,
+		code: http.StatusTemporaryRedirect,
+		r:    r,
 	}
 }
 
@@ -40,58 +36,30 @@ func RegisterJsonHandler(ctx echo.Context, r *services.Registrar) error {
 	return NewRegisterHandler(ctx, r).Handle().JSON()
 }
 
-func (h *RegisterHandler) Lock(code int, err error) *RegisterHandler {
-	h.code = code
-	h.err = fmt.Errorf("%d Error: %s", h.code, err.Error())
-	return h
-}
-
-func (h *RegisterHandler) Handle() handlers.IHandler{
-	var request *requests.NewUserRequest
-	var err error
-
-	if request, err = h.r.ValidatorService.ValidateNewUserRequest(h.ctx); err != nil {
-		return handlers.Lock(h, 400, err)
-	}
-	fmt.Println(request)
-	if h.newUser, err = h.r.UserService.Create(request); err != nil {
-		return handlers.Lock(h, 500, err)
-	}
-	fmt.Println(h.newUser)
-	if h.token, err = h.r.AuthService.Create(h.newUser); err != nil {
-		return handlers.Lock(h, 500, err)
-	}
+func (h *RegisterHandler) Handle() handlers.IHandler {
+	h.redirectURL = h.r.AuthService.SignupURL()
 	return h
 }
 
 func (h *RegisterHandler) JSON() error {
-	if h.token == nil {
-		h.token = new(string)	
-	}
 	if h.err != nil {
 		return responses.NewLoginResponse().Fail(h.ctx, h.code, h.err)
-	} else {
-		return responses.NewLoginResponse().Successful(h.ctx, h.newUser, *h.token)
 	}
+	return h.ctx.Redirect(http.StatusTemporaryRedirect, h.redirectURL)
 }
 
 func (h *RegisterHandler) SetError(err error) handlers.IHandler {
 	h.err = err
 	return h
 }
+
 func (h *RegisterHandler) SetCode(code int) handlers.IHandler {
 	h.code = code
 	return h
 }
 
 func (h *RegisterHandler) Data() any {
-	return struct {
-		NewUser *repository.User
-		Token   *string
-	}{
-		NewUser: h.newUser,
-		Token:   h.token,
-	}
+	return h.redirectURL
 }
 
 func (h *RegisterHandler) Code() int {

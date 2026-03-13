@@ -3,12 +3,26 @@
 package services
 
 import (
+	"context"
+
 	"__EGG_NAMESPACE__/db/repository"
 )
 
-
 type IAuthService interface {
+	// LoginURL returns the Auth0 authorization URL to redirect the user to for login.
+	LoginURL() string
+	// SignupURL returns the Auth0 authorization URL to redirect the user to for signup.
+	SignupURL() string
+	// Callback exchanges the authorization code for tokens, verifies the ID token,
+	// and returns the claims from the verified token.
+	Callback(ctx context.Context, code string) (*CustomJwt, error)
+
+	// Create and Update satisfy legacy handler patterns; in Auth0 mode token
+	// issuance is handled by Auth0, so these return an empty string token.
 	Create(user *repository.User) (*string, error)
- 	Update(user repository.User) (*string, error)
+	Update(user repository.User) (*string, error)
+
+	// CheckToken is a no-op for Auth0: the OIDC middleware already validated
+	// the bearer token before any handler is invoked.
 	CheckToken(token string) error
 }

@@ -3,36 +3,69 @@
 package configs
 
 import (
+	"context"
 	"strings"
 
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
-	"__EGG_NAMESPACE__/services"
+
 	"__EGG_NAMESPACE__/cmd/configuration"
+	"__EGG_NAMESPACE__/services"
 )
 
+// AuthMiddlewareConfig returns an echojwt.Config that validates Auth0 access
+// tokens using the OIDC discovery document at the configured domain.
+//
+// Tokens are verified against Auth0's public JWKS endpoint; no symmetric
+// secret is required.  On success, a *jwt.Token whose Claims field is a
+// *services.CustomJwt is stored in the echo context under the "user" key,
+// matching the interface expected by all handler code.
 func AuthMiddlewareConfig(config *configuration.Configuration) echojwt.Config {
-	return echojwt.Config {
+	issuer := "https://" + config.Server.Auth0.Domain + "/"
+
+	provider, err := oidc.NewProvider(context.Background(), issuer)
+	if err != nil {
+		panic("AuthMiddlewareConfig: failed to reach Auth0 OIDC provider: " + err.Error())
+	}
+
+	// SkipClientIDCheck lets access tokens with an API audience (not the
+	// client ID) pass verification; tighten this if you want strict aud checks.
+	verifier := provider.Verifier(&oidc.Config{SkipClientIDCheck: true})
+
+	return echojwt.Config{
 		SuccessHandler: func(c echo.Context) {
-			logger := c.Logger()
-			logger.Info("Success Recognized Token")
+			c.Logger().Info("Auth0 token verified")
 		},
 		ErrorHandler: func(c echo.Context, err error) error {
-			logger := c.Logger()
-			logger.Error(err.Error())
+			c.Logger().Error(err.Error())
 			return c.JSON(401, map[string]string{"message": err.Error()})
 		},
-		SigningKey: []byte(config.Server.JWT),
 		Skipper: func(c echo.Context) bool {
-			if strings.Contains(c.Path(), "swagger") {
-				return true
-			} else {
-				return false
-			}
+			return strings.Contains(c.Path(), "swagger")
 		},
-		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(services.CustomJwt)
+		// ParseTokenFunc gives us full control: validate via OIDC then wrap
+		// the claims in a *jwt.Token so handler code is unchanged.
+		ParseTokenFunc: func(c echo.Context, auth string) (interface{}, error) {
+			idToken, err := verifier.Verify(c.Request().Context(), auth)
+			if err != nil {
+				return nil, err
+			}
+
+			var claims services.CustomJwt
+			if err := idToken.Claims(&claims); err != nil {
+				return nil, err
+			}
+
+			// Return a *jwt.Token whose Raw field preserves the original
+			// token string (used by CheckToken / token DB operations).
+			token := &jwt.Token{
+				Raw:    auth,
+				Claims: &claims,
+				Valid:  true,
+			}
+			return token, nil
 		},
 	}
 }

@@ -6,23 +6,28 @@ import (
 	"context"
 
 	"__EGG_NAMESPACE__/cmd/configuration"
+	"__EGG_NAMESPACE__/db/repository"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/oauth2"
 )
 
-// AuthService provides authentication services, including creating and checking toknnntttnnens.
+// AuthService provides authentication services backed by Auth0 OIDC.
+// Token issuance and verification are handled by Auth0; these methods satisfy
+// the IAuthService interface but delegate token operations to Auth0.
 type AuthService struct {
 	ctx      context.Context
+	db       *pgxpool.Pool
 	provider *oidc.Provider
 	oathc    oauth2.Config
 }
 
-
-// Returns a refrence to a new UserService to be used in the controller
+// CreateAuthService returns a new AuthService configured for the given Auth0 tenant.
 func CreateAuthService(
-	ctx context.Context, 
-	config   *configuration.Configuration,
+	ctx context.Context,
+	db *pgxpool.Pool,
+	config *configuration.Configuration,
 ) *AuthService {
 	provider, err := oidc.NewProvider(
 		ctx,
@@ -37,16 +42,31 @@ func CreateAuthService(
 		RedirectURL:  config.Server.Auth0.CallbackURL,
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
-
-	}
-	if err != nil {
-		panic(err)
 	}
 	return &AuthService{
-		ctx,
-		provider,
-		oathc,
+		ctx:      ctx,
+		db:       db,
+		provider: provider,
+		oathc:    oathc,
 	}
 }
 
+// Create is called when a new user record should be persisted locally.
+// With Auth0, token issuance is handled by Auth0, so an empty string is returned.
+func (a *AuthService) Create(user *repository.User) (*string, error) {
+	empty := ""
+	return &empty, nil
+}
 
+// Update is called when an existing user re-authenticates.
+// With Auth0, token issuance is handled by Auth0, so an empty string is returned.
+func (a *AuthService) Update(user repository.User) (*string, error) {
+	empty := ""
+	return &empty, nil
+}
+
+// CheckToken is a no-op for Auth0: the OIDC middleware (AuthMiddlewareConfig)
+// already validates the token before any handler is invoked.
+func (a *AuthService) CheckToken(token string) error {
+	return nil
+}

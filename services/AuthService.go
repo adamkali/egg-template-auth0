@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"__EGG_NAMESPACE__/cmd/configuration"
-	"__EGG_NAMESPACE__/db/repository"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
@@ -35,7 +34,7 @@ func CreateAuthService(
 	oathc := oauth2.Config{
 		ClientID:     config.Server.Auth0.ClientID,
 		ClientSecret: config.Server.Auth0.ClientSecret,
-		RedirectURL:  config.Server.Auth0.Call,
+		RedirectURL:  config.Server.Auth0.CallbackURL,
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 
